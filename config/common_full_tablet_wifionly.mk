@@ -1,5 +1,5 @@
 # Inherit commonstuff
-$(call inherit-product, vendor/ev/config/common.mk)
+$(call inherit-product, vendor/cn/config/common.mk)
 
 # Bring in all audio files
 include frameworks/base/data/sounds/AllAudio.mk
