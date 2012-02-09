@@ -1,0 +1,22 @@
+#!/system/bin/sh
+# Team Classicnerd @
+
+
+echo "Final Cleaning and Appplying IO Tweaks"
+
+# Clean
+rm -f /cache/*.apk;
+rm -f /cache/*.tmp;
+rm -f /data/dalvik-cache/*.apk;
+rm -f /data/dalvik-cache/*.tmp;
+
+# Start Sysctl Mods
+sysctl -p
+sync
+setprop cm.filesystem.ready 1;
+setprop dc.filesystem.ready 1;
+setprop oxygen.filesystem.ready 1;
+
+
+/system/xbin/kernel
+

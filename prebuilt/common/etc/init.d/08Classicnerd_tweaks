@@ -1,0 +1,87 @@
+#!/system/bin/sh
+#LEOisright and Misfit
+
+if [ $DEBUG_ECHO -eq "1" ]; then
+  echo "LST Debug: Done"
+  echo ""
+fi;
+
+# Increase network buffer size
+setprop net.tcp.buffersize.default=4096,87380,256960,4096,16384,256960
+setprop net.tcp.buffersize.wifi=4096,87380,256960,4096,16384,256960
+
+
+mount -o remount,noatime,delalloc,noauto_da_alloc,barrier=1 /system /system
+mount -o remount,noatime,delalloc,noauto_da_alloc,barrier=0 /cache /cache
+mount -o remount,noatime,delalloc,noauto_da_alloc,barrier=0 /data /data
+
+
+#disable iostats to reduce overhead  # idea by kodos96 - thanks !
+for k in $STL $BML $MMC $ZRM;
+do
+	if [ -e $i/queue/iostats ];
+	then
+		echo "0" > $k/queue/iostats;
+	fi;
+done;
+
+# Remount all partitions with noatime
+for k in $(busybox mount | grep relatime | cut -d " " -f3);
+
+do
+sync;
+busybox mount -o remount,noatime $k;
+done;
+
+# Sqlite mods
+for i in `find /data -iname "*.db"`;	do
+	/system/xbin/sqlite3 $i 'VACUUM;'; 
+        /system/xbin/sqlite3 $i 'PRAGMA journal_mode = WAL;'; 
+        /system/xbin/sqlite3 $i 'PRAGMA temp_store = MEMORY;';  
+        /system/xbin/sqlite3 $i 'PRAGMA count_changes = OFF;';  
+        /system/xbin/sqlite3 $i 'PRAGMA synchronous = OFF;';  
+        /system/xbin/sqlite3 $i 'PRAGMA auto_vacuum = FULL;';  
+        /system/xbin/sqlite3 $i 'PRAGMA wal_autocheckpoint = 0;';   
+done;
+
+# Move dalvik-cache to cache partition
+
+CACHESIZE=$(df -k /cache | tail -n1 | tr -s ' ' | cut -d ' ' -f2)
+if [ $CACHESIZE -gt 80000 ]
+	then
+	echo "Large cache detected, moving dalvik-cache to /cache"
+	if [ ! -d /cache/dalvik-cache ]
+		then
+		busybox rm -rf /cache/dalvik-cache /data/dalvik-cache
+		mkdir /cache/dalvik-cache /data/dalvik-cache
+		fi
+
+	busybox chown 1000:1000 /cache/dalvik-cache
+	busybox chmod 0771 /cache/dalvik-cache
+
+	# bind mount dalvik-cache so we can still boot without the sdcard
+	busybox mount -o bind /cache/dalvik-cache /data/dalvik-cache
+	busybox chown 1000:1000 /data/dalvik-cache
+	busybox chmod 0771 /data/dalvik-cache
+	else
+	echo "Small cache detected, dalvik-cache will remain on /data"
+fi
+
+# Low Memory Tweaks
+if [ -e /sys/module/lowmemorykiller/parameters/adj ]; then
+	echo "0,1,2,4,6,15" > /sys/module/lowmemorykiller/parameters/adj
+fi
+	echo "2560,4096,5632,10240,11776,14848" > /sys/module/lowmemorykiller/parameters/minfree
+
+
+# Scheduler Tweaks
+
+	echo "noop" > /sys/block/mmcblk0/queue/scheduler
+        echo "100000" > /sys/block/mmcblk0/queue/nr_requests
+	echo "3072" > /sys/block/mmcblk0/queue/read_ahead_kb
+        echo "NO_GENTLE_FAIR_SLEEPERS" > /sys/kernel/debug/sched_features
+        echo "ARCH_POWER" > /sys/kernel/debug/sched_features
+        echo "HRTICK" > /sys/kernel/debug/sched_features
+
+
+

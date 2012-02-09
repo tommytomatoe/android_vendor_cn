@@ -1,0 +1,7 @@
+#!/system/bin/sh
+# echo "Starting flush DNS script created by leoisright"
+# killall wpa_supplicant
+# wpa_supplicant -dd -Dar6000 -iw-c/data/misc/wifi/wpa_supplicant.conf
+# nscd stop
+# nscd start
+
