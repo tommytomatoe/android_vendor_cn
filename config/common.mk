@@ -25,7 +25,6 @@ PRODUCT_PACKAGES += \
 # Optional packages
 PRODUCT_PACKAGES += \
     AndroidTerm \
-    EVToolbox \
     VideoEditor \
     VoiceDialer \
     Basic \
@@ -44,7 +43,7 @@ PRODUCT_COPY_FILES += \
     vendor/cn/prebuilt/common/etc/init.d/00banner:system/etc/init.d/00banner \
     vendor/cn/prebuilt/common/etc/init.d/05mountext:system/etc/init.d/05mountext \
     vendor/cn/prebuilt/common/etc/init.d/07flushdns:system/etc/init.d/07flushdns \
-    vendor/cn/prebuild/common/etc/init.d/08classicnerd_tweaks:system/etc/init.d/08classicnerd_tweaks \
+    vendor/cn/prebuilt/common/etc/init.d/08classicnerd_tweaks:system/etc/init.d/08classicnerd_tweaks \
     vendor/cn/prebuild/common/etc/init.d/99complete:system/etc/init.d/99complete
 
 # Apps2sd files
