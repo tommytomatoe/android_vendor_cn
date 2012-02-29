@@ -5,3 +5,18 @@ service compcache /system/bin/handle_compcache
     user root
     group root
     oneshot
+
+service bootsound /system/bin/bootsound
+    user media /system/etc/init.local.rc
+    group audio /system/etc/init.local.rc
+    disabled /system/etc/init.local.rc
+    oneshot /system/etc/init.local.rc
+
+on property:init.svc.bootanim=running 
+# to correct timin /system/etc/init.local.rc
+    start bootsound /system/etc/init.local.rc
+
+on property:dev.bootcomplete=1 /system/etc/init.local.rc
+    stop bootsound /system/etc/init.local.rc
+
+### Bootsound - Safe to Delete: End ###

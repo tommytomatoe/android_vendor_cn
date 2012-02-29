@@ -44,12 +44,13 @@ PRODUCT_COPY_FILES += \
     vendor/cn/prebuilt/common/etc/init.d/05mountext:system/etc/init.d/05mountext \
     vendor/cn/prebuilt/common/etc/init.d/07flushdns:system/etc/init.d/07flushdns \
     vendor/cn/prebuilt/common/etc/init.d/08classicnerd_tweaks:system/etc/init.d/08classicnerd_tweaks \
-    vendor/cn/prebuild/common/etc/init.d/99complete:system/etc/init.d/99complete
+    vendor/cn/prebuilt/common/etc/init.d/99complete:system/etc/init.d/99complete
 
 # Apps2sd files
 PRODUCT_COPY_FILES += \
     vendor/cn/prebuilt/common/bin/a2sd:system/bin/a2sd \
     vendor/cn/prebuilt/common/bin/fix_permissions:system/bin/fix_permissions \
+    vendor/cn/prebuilt/common/xbin/bootsnd.sh:system/xbin/bootsnd.sh \
     vendor/cn/prebuilt/common/xbin/zipalign:system/xbin/zipalign \
     vendor/cn/prebuilt/common/etc/init.d/10apps2sd-redux:system/etc/init.d/10apps2sd
 
